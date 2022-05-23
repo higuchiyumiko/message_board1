@@ -1,12 +1,17 @@
 package controllers;
 
 import java.io.IOException; //入出力処理中の例外を管理するクラス
+import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import models.Message;
+import utils.DBUtil;
 
 /**
  * Servlet implementation class IndexServlet
@@ -24,12 +29,16 @@ public class IndexServlet extends HttpServlet {
     }
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-		//文字列を連結する–appendメソッド
+		 EntityManager em = DBUtil.createEntityManager();
+		//getAllMessages を createNamedQuery メソッドの引数に指定
+		//問い合わせ結果を getResultList() メソッドを使ってリスト形式で取得
+		List <Message> messages=em.createNamedQuery("getAllMessages",Message.class).getResultList();
+		response.getWriter().append(Integer.valueOf(messages.size()).toString());
+
+		em.close();
 	}
 
 }
