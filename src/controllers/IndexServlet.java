@@ -4,6 +4,7 @@ import java.io.IOException; //入出力処理中の例外を管理するクラ�
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -36,9 +37,13 @@ public class IndexServlet extends HttpServlet {
 		//getAllMessages を createNamedQuery メソッドの引数に指定
 		//問い合わせ結果を getResultList() メソッドを使ってリスト形式で取得
 		List <Message> messages=em.createNamedQuery("getAllMessages",Message.class).getResultList();
-		response.getWriter().append(Integer.valueOf(messages.size()).toString());
 
 		em.close();
+
+		request.setAttribute("messages",messages);
+
+		RequestDispatcher rd=request.getRequestDispatcher("/WEB-INF/views/messages/index.jsp");
+		rd.forward(request,response);
 	}
 
 }
